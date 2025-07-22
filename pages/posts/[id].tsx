@@ -1,6 +1,5 @@
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { useRouter } from 'next/router'
-import { fetchPostApi } from '../../lib/fetchApi'
 import { fetchPostById } from '../../lib/fetchPost'
 
 type Post = {
@@ -30,12 +29,7 @@ export const getStaticProps: GetStaticProps<PostPageProps> = async (context) => 
   const { id } = context.params as { id: string }
 
   try {
-    const isPrebuilt = ['1', '2', '3', '4', '5'].includes(id)
-    const post = isPrebuilt
-      ? await fetchPostById(id)  
-      : await fetchPostApi(id)   
-
-    console.log(`Regenerating page for Post ID: ${id} at ${post.timestamp}`)
+    const post = await fetchPostById(id)
 
     return {
       props: {
@@ -43,8 +37,7 @@ export const getStaticProps: GetStaticProps<PostPageProps> = async (context) => 
       },
       revalidate: 10,
     }
-  } catch (error) {
-    console.error(`Error fetching post ${id}:`, error)
+  } catch {
     return {
       notFound: true,
     }
@@ -60,21 +53,12 @@ export default function PostPage({ post }: PostPageProps) {
 
   return (
     <div style={{ padding: '2rem', fontFamily: 'Arial, sans-serif' }}>
-      <h1>Post #{post.id}</h1>
+      <h1>📝 Post #{post.id}</h1>
       <h2>{post.title}</h2>
       <p>{post.body}</p>
-      <div
-        style={{
-          marginTop: '2rem',
-          padding: '1rem',
-          backgroundColor: '#f3f4f6',
-          borderRadius: '8px',
-          fontSize: '0.9rem',
-          color: '#555',
-        }}
-      >
+      <p style={{ marginTop: '1rem', color: 'gray' }}>
         <strong>Timestamp:</strong> {post.timestamp}
-      </div>
+      </p>
     </div>
   )
 }
