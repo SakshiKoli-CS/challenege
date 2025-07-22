@@ -1,5 +1,7 @@
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { useRouter } from 'next/router'
+import { fetchPostApi } from '../../lib/fetchApi'
+import { fetchPostById } from '../../lib/fetchPost'
 
 type Post = {
   userId: number
@@ -12,8 +14,6 @@ type Post = {
 type PostPageProps = {
   post: Post
 }
-
-const BASE_URL = 'https://challenege.devcontentstackapps.com'
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const paths = [1, 2, 3, 4, 5].map((id) => ({
@@ -30,13 +30,12 @@ export const getStaticProps: GetStaticProps<PostPageProps> = async (context) => 
   const { id } = context.params as { id: string }
 
   try {
-    const res = await fetch(`${BASE_URL}/api/posts/${id}`)
+    const isPrebuilt = ['1', '2', '3', '4', '5'].includes(id)
+    const post = isPrebuilt
+      ? await fetchPostById(id)  
+      : await fetchPostApi(id)   
 
-    if (!res.ok) {
-      return { notFound: true }
-    }
-
-    const post = await res.json()
+    console.log(`Regenerating page for Post ID: ${id} at ${post.timestamp}`)
 
     return {
       props: {
@@ -44,7 +43,8 @@ export const getStaticProps: GetStaticProps<PostPageProps> = async (context) => 
       },
       revalidate: 10,
     }
-  } catch {
+  } catch (error) {
+    console.error(`Error fetching post ${id}:`, error)
     return {
       notFound: true,
     }
@@ -59,13 +59,22 @@ export default function PostPage({ post }: PostPageProps) {
   }
 
   return (
-    <div>
+    <div style={{ padding: '2rem', fontFamily: 'Arial, sans-serif' }}>
       <h1>Post #{post.id}</h1>
       <h2>{post.title}</h2>
       <p>{post.body}</p>
-      <p>
+      <div
+        style={{
+          marginTop: '2rem',
+          padding: '1rem',
+          backgroundColor: '#f3f4f6',
+          borderRadius: '8px',
+          fontSize: '0.9rem',
+          color: '#555',
+        }}
+      >
         <strong>Timestamp:</strong> {post.timestamp}
-      </p>
+      </div>
     </div>
   )
 }
