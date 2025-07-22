@@ -14,7 +14,9 @@ type HomeProps = {
 
 export const getStaticProps: GetStaticProps<HomeProps> = async () => {
   const res = await fetch('https://my-json-server.typicode.com/horizon-code-academy/fake-movies-api/movies')
-  const movies: Movie[] = await res.json()
+  let movies: Movie[] = await res.json()
+
+  movies = movies.sort(() => Math.random() - 0.5)
 
   return {
     props: {
