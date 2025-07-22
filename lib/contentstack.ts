@@ -12,7 +12,6 @@ export const Stack = contentstack.Stack({
   },
 })
 
-
 Stack.setHost(process.env.NEXT_PUBLIC_CONTENTSTACK_LIVE_PREVIEW_HOST!)
 
 ContentstackLivePreview.init({
