@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { GetStaticProps } from 'next'
 
@@ -14,9 +15,7 @@ type HomeProps = {
 
 export const getStaticProps: GetStaticProps<HomeProps> = async () => {
   const res = await fetch('https://my-json-server.typicode.com/horizon-code-academy/fake-movies-api/movies')
-  let movies: Movie[] = await res.json()
-
-  movies = movies.sort(() => Math.random() - 0.5)
+  const movies: Movie[] = await res.json()
 
   return {
     props: {
@@ -25,19 +24,51 @@ export const getStaticProps: GetStaticProps<HomeProps> = async () => {
   }
 }
 
-export default function Home({ movies }: HomeProps) {
-  return (
-    <div style={{ padding: '2rem' }}>
-      <h1>🎥 Shuffled Movies (Static Site)</h1>
-      <p>Refresh the page — the order won't change unless you rebuild.</p>
+function shuffleArray<T>(arr: T[]): T[] {
+  const shuffled = [...arr]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled
+}
 
-      <ul>
-        {movies.map((movie, index) => (
-          <li key={index}>
-            {index + 1}. <strong>{movie.Title}</strong> ({movie.Year})
-          </li>
+export default function Home({ movies }: HomeProps) {
+  const [shuffledMovies, setShuffledMovies] = useState<Movie[]>([])
+
+  useEffect(() => {
+    setShuffledMovies(shuffleArray(movies))
+  }, [movies])
+
+  return (
+    <div>
+      <h1>Oswald</h1>
+
+      <div>
+        <Image
+          src="/OswaldCartoon.webp"
+          alt="Oswald"
+          width={300}
+          height={450}
+        />
+      </div>
+
+      <p>My Favorite Childhood Cartoon ❤️</p>
+
+      <h2>Movie List</h2>
+      <div>
+        {shuffledMovies.map((movie, index) => (
+          <div key={index}>
+            {movie.Poster ? (
+              <img src={movie.Poster} alt={movie.Title} />
+            ) : (
+              <div>No Image</div>
+            )}
+            <h3>{movie.Title}</h3>
+            <p>{movie.Year} • {movie.Runtime}</p>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   )
 }
