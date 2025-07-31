@@ -39,7 +39,7 @@ export default function Home({ movie }: HomeProps) {
         />
       </div>
 
-      <p>My Favorite Childhood Cartoon ❤️</p>
+      <p>My Favorite Childhood Cartoon </p>
 
       <h2>Featured Movie</h2>
       <div>

@@ -39,28 +39,21 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
 
 export default function ShuffleProducts({ product }: Props) {
   return (
-    <div style={{ padding: '2rem', textAlign: 'center', fontFamily: 'Arial' }}>
-      <h1>🎲 Random Product</h1>
+    <div>
+      <h1>Random Product</h1>
 
-      <div style={{
-        margin: '2rem auto',
-        padding: '1.5rem',
-        borderRadius: '12px',
-        border: '2px solid #ddd',
-        backgroundColor: '#fff',
-        maxWidth: '450px'
-      }}>
-        <img
-          src={product.images[0]}
-          alt={product.title}
-          style={{ width: '100%', height: '250px', objectFit: 'cover', borderRadius: '10px' }}
-        />
-        <h2 style={{ marginTop: '1rem' }}>{product.title}</h2>
-        <p><strong>Price:</strong> ${product.price}</p>
-        <p><strong>Category:</strong> {product.category.name}</p>
-        <p><strong>Description:</strong> {product.description}</p>
-        <p><strong>Random Number:</strong> {product.randomNum}</p>
-      </div>
+      <img
+        src={product.images[0]}
+        alt={product.title}
+        width="150"
+        height="150"
+      />
+
+      <h2>{product.title}</h2>
+      <p>Price: ${product.price}</p>
+      <p>Category: {product.category.name}</p>
+      <p>Description: {product.description}</p>
+      <p>Random Number: {product.randomNum}</p>
     </div>
   )
 }
