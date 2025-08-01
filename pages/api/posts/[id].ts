@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const post = await fetchPostById(id)
 
-    res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59')
+    // res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59')
 
     console.log(` API: Served post ${id} at ${post.timestamp}`)
 
